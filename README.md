@@ -1,4 +1,4 @@
-# CausoBiome: A Multi-Stage Pipeline for Microbiome-Driven Causal Discovery and Intervention Design in Colorectal Cancer
+# CausoBiome: A Multi-Stage Pipeline for Microbiome-Driven Causal Discovery and Intervention Design
 
 **CausoBiome** is a modular, stage-aware pipeline designed to identify, validate, and prioritize microbial species that are functionally and causally linked to colorectal cancer (CRC) progression. It is uniquely structured to model **ordinal clinical transitions**—from *Healthy* to *Adenoma* to *Cancer* and to uncover microbial contributors driving disease trajectory.CausoBiome builds upon high-quality, genome-resolved metagenomic preprocessing pipelines from the [`genome-resolved-urban-microbiome-biosurveillance`](https://github.com/SuleimanAminu/genome-resolved-urban-microbiome-biosurveillance) repository, specifically Modules `01_Bioinformatics` and `02_Quality_Batch_subsetting`. By extending these upstream workflows, CausoBiome introduces powerful downstream functionality including **ecological profiling**, **machine learning-based classification**, **causal inference via Double Machine Learning (DML)**, and **in silico microbial intervention modeling**. Purpose-built not merely to describe microbiome differences, CausoBiome infers **stage-specific microbial drivers**, models **inter-species interactions**, and simulates **therapeutic perturbations** bridging the gap between microbial discovery and translational action.
 Importantly, **CausoBiome is inherently extensible to other diseases with well-defined ordinal stages** . Its modular architecture, causal modeling core, and intervention simulation engine make it adaptable to any pathology where microbiome dynamics evolve progressively across clinical stages.
@@ -124,8 +124,9 @@ If you use **CausoBiome**, please cite the following manuscript:
 > *Functional Microbiome Drivers of Colorectal Cancer Progression Identified Through Genome-Resolved Causal Inference*.  
 > npj Biofilms and Microbiomes (Submitted).
 
-> Zenodo :
+Zenodo. [https://zenodo.org/records/15511511]([https://doi.org/10.5281/zenodo.15505402](https://zenodo.org/records/15511511))
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15511511.svg)](https://doi.org/10.5281/zenodo.15511511) 
 
 ## Submitted Articles Related to the Framework
 
@@ -134,5 +135,12 @@ If you use **CausoBiome**, please cite the following manuscript:
 > npj Biofilms and Microbiomes (Submitted).
 
 > **Ascandari, A., Aminu, S., Benhida, R., & Daoud, R.** (2025).  
-CausoBiome: A Multi-Stage Pipeline for Microbiome-Driven Causal Discovery and Intervention Design in Colorectal Cancer.
+CausoBiome: A Multi-Stage Pipeline for Microbiome-Driven Causal Discovery and Intervention Design.
 Bioinformatics (Submitted).
+
+## Contact
+For questions, feedback, or collaboration regarding this framework, please reach out:
+
+AbdulAziz Ascandari, PhD Researcher, Department of Chemical and Biochemical Sciences, University Mohammed VI Polytechnic (UM6P), Morocco, suleiman.aminu@um6p.ma
+
+Prof. Rachid Daoud, Group Leader & Supervisor, Department of Chemical and Biochemical Sciences, University Mohammed VI Polytechnic (UM6P), Morocco, rachid.daoud@um6p.ma
