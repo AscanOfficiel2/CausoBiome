@@ -1,0 +1,43 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*.ipynb_checkpoints
+.env
+*.pkl
+*.joblib
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+.Rproj
+*.Rout
+
+# Slurm HPC logs
+*.out
+*.err
+*.log
+
+# Data outputs
+*.csv
+*.tsv
+*.xlsx
+*.h5
+*.json
+
+# Plots and images
+*.tiff
+*.png
+*.pdf
+*.svg
+
+# System and editor files
+.DS_Store
+.vscode/
+.idea/
+
+# Environment files
+*.conda
+*.mamba
+*.venv
