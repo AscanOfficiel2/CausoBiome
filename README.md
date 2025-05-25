@@ -119,7 +119,7 @@ A Zenodo DOI has been assigned to ensure formal authorship record.
 If you use **CausoBiome**, please cite the following manuscript:
 
 > **Ascandari, A., Aminu, S., Benhida, R., & Daoud, R.** (2025).  
-> *Functional Microbiome Drivers of Colorectal Cancer Progression Identified Through Genome-Resolved Causal Inference*.  
+> *Causal Inference and Species Interaction Networks Reveal Keystone Microbes in Genome-Resolved CRC Progression*.  
 > npj Biofilms and Microbiomes (Submitted).
 
 > Zenodo. [https://zenodo.org/records/15511511]([https://doi.org/10.5281/zenodo.15505402](https://zenodo.org/records/15511511))
@@ -129,7 +129,7 @@ If you use **CausoBiome**, please cite the following manuscript:
 ## Submitted Articles Related to the Framework
 
 > **Ascandari, A., Aminu, S., Benhida, R., & Daoud, R.** (2025).  
-> *Functional Microbiome Drivers of Colorectal Cancer Progression Identified Through Genome-Resolved Causal Inference*.  
+> *Causal Inference and Species Interaction Networks Reveal Keystone Microbes in Genome-Resolved CRC Progression*.  
 > npj Biofilms and Microbiomes (Submitted).
 
 > **Ascandari, A., Aminu, S., Benhida, R., & Daoud, R.** (2025).  
