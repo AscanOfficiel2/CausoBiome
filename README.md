@@ -30,7 +30,7 @@ CausoBiome/
 
 While prior workflows end at taxonomic profiling or classification, **CausoBiome** extends microbiome analytics into the **causal and translational domain**. It enables:
 
-- High-resolution species-level modeling of CRC progression (Healthy → Adenoma → Cancer)
+- High-resolution species-level modeling of disease progression 
 - Robust batch correction and functional species selection (VFDB, CARD)
 - Benchmarking of supervised classifiers for stage prediction
 - Causal estimation of microbial effects via Double Machine Learning (DML)
