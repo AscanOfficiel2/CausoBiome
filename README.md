@@ -1,9 +1,3 @@
----
-output:
-  pdf_document: default
-  html_document: default
----
-
 # CausoBiome: A Multi-Stage Pipeline for Microbiome-Driven Causal Discovery and Intervention Design in Colorectal Cancer
 
 **CausoBiome** is a modular, stage-aware pipeline designed to identify, validate, and prioritize microbial species that are functionally and causally linked to colorectal cancer (CRC) progression. It is uniquely structured to model **ordinal clinical transitions**—from *Healthy* to *Adenoma* to *Cancer*—and to uncover microbial contributors driving disease trajectory.CausoBiome builds upon high-quality, genome-resolved metagenomic preprocessing pipelines from the [`genome-resolved-urban-microbiome-biosurveillance`](https://github.com/SuleimanAminu/genome-resolved-urban-microbiome-biosurveillance) repository, specifically Modules `01_Bioinformatics` and `02_Quality_Batch_subsetting`. By extending these upstream workflows, CausoBiome introduces powerful downstream functionality including **ecological profiling**, **machine learning-based classification**, **causal inference via Double Machine Learning (DML)**, and **in silico microbial intervention modeling**. Purpose-built not merely to describe microbiome differences, CausoBiome infers **stage-specific microbial drivers**, models **inter-species interactions**, and simulates **therapeutic perturbations**—bridging the gap between microbial discovery and translational action.
