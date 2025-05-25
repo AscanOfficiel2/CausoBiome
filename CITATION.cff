@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use CausoBiome, please cite this software using the metadata below."
+title: "CausoBiome: A Multi-Stage Pipeline for Microbiome-driven Causal Discovery and Intervention Design"
+version: "1.0.1"
+doi: "https://zenodo.org/records/15511511"
+date-released: 2025-05-24
+repository-code: https://github.com/SuleimanAminu/genome-resolved-urban-microbiome-biosurveillance
+authors:
+  - family-names: Ascandari
+    given-names: AbdulAziz
+    affiliation: "University Mohammed VI Polytechnic"
+    orcid: https://orcid.org/0009-0005-4320-5609 
+- family-names: Aminu
+    given-names: Suleiman
+    affiliation: "University Mohammed VI Polytechnic"
+    orcid: https://orcid.org/0000-0002-6520-8596 
+  - family-names: Benhida
+    given-names: Rachid
+    affiliation: "University Mohammed VI Polytechnic"
+  - family-names: Daoud
+    given-names: Rachid
+    affiliation: "University Mohammed VI Polytechnic"
+    orcid: https://orcid.org/0000-0003-0212-988X
+keywords:
+  - metagenomics
+  - AMR surveillance
+  - microbiome
+  - genome-resolved analysis
+  - Double Machine Learning (DML)
+  - Colorectal Cancer
+license: MIT
