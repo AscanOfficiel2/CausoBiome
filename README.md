@@ -110,8 +110,6 @@ This repository is shared under the MIT License to promote transparency and repr
 
 A Zenodo DOI has been assigned to ensure formal authorship record.
 
--Please cite CausoBiome using the 
-
 -We kindly request that you do not republish or repackage this methodology before journal publication.
 
 
@@ -124,7 +122,7 @@ If you use **CausoBiome**, please cite the following manuscript:
 > *Functional Microbiome Drivers of Colorectal Cancer Progression Identified Through Genome-Resolved Causal Inference*.  
 > npj Biofilms and Microbiomes (Submitted).
 
-Zenodo. [https://zenodo.org/records/15511511]([https://doi.org/10.5281/zenodo.15505402](https://zenodo.org/records/15511511))
+> Zenodo. [https://zenodo.org/records/15511511]([https://doi.org/10.5281/zenodo.15505402](https://zenodo.org/records/15511511))
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15511511.svg)](https://doi.org/10.5281/zenodo.15511511) 
 
@@ -141,6 +139,6 @@ Bioinformatics (Submitted).
 ## Contact
 For questions, feedback, or collaboration regarding this framework, please reach out:
 
-AbdulAziz Ascandari, PhD Researcher, Department of Chemical and Biochemical Sciences, University Mohammed VI Polytechnic (UM6P), Morocco, suleiman.aminu@um6p.ma
+AbdulAziz Ascandari, PhD Researcher, Department of Chemical and Biochemical Sciences, University Mohammed VI Polytechnic (UM6P), Morocco, abdulaziz.ascandari@um6p.ma
 
 Prof. Rachid Daoud, Group Leader & Supervisor, Department of Chemical and Biochemical Sciences, University Mohammed VI Polytechnic (UM6P), Morocco, rachid.daoud@um6p.ma
