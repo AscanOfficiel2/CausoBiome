@@ -128,11 +128,8 @@ Zenodo. [https://zenodo.org/records/15511511]([https://doi.org/10.5281/zenodo.15
 
 > **Ascandari, A., Aminu, S., Benhida, R., & Daoud, R.** (2025).  
 > *A Genome- Resolved Causal Inference Study Identifies Streptococcus vestibularis and Turicibacter bilis as key Drivers in Colorectal Cancer Progression*.  
-> npj Biofilms and Microbiomes (Submitted).
+> Nature Communications (Submitted).
 
-> **Ascandari, A., Aminu, S., Benhida, R., & Daoud, R.** (2025).  
-CausoBiome: A Multi-Stage Pipeline for Microbiome-Driven Causal Discovery and Intervention Design.
-Bioinformatics (Submitted).
 
 ## Contact
 For questions, feedback, or collaboration regarding this framework, please reach out:
