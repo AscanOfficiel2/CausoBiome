@@ -120,9 +120,7 @@ If you use **CausoBiome**, please cite the following manuscript:
 
 > **Ascandari, A., Aminu, S., Benhida, R., & Daoud, R.** (2025).  
 > *A Genome- Resolved Causal Inference Study Identifies Streptococcus vestibularis and Turicibacter bilis as key Drivers in Colorectal Cancer Progression*.  
-
-
-> Zenodo. [https://zenodo.org/records/15511511]([https://doi.org/10.5281/zenodo.15505402](https://zenodo.org/records/15511511))
+Zenodo. [https://zenodo.org/records/15511511]([https://doi.org/10.5281/zenodo.15505402](https://zenodo.org/records/15511511))
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15511511.svg)](https://doi.org/10.5281/zenodo.15511511) 
 
