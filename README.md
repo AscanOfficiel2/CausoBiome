@@ -110,7 +110,7 @@ This repository is shared under the MIT License to promote transparency and repr
 
 A Zenodo DOI has been assigned to ensure formal authorship record.
 
--We kindly request that you do not republish or repackage this methodology before journal publication.
+We kindly request that you do not republish or repackage this methodology before journal publication.
 
 
 
@@ -119,7 +119,7 @@ A Zenodo DOI has been assigned to ensure formal authorship record.
 If you use **CausoBiome**, please cite the following manuscript:
 
 > **Ascandari, A., Aminu, S., Benhida, R., & Daoud, R.** (2025).  
-> *Causal Inference and Species Interaction Networks Reveal Keystone Microbes in Genome-Resolved CRC Progression*.  
+> *A Genome- Resolved Causal Inference Study Identifies Streptococcus vestibularis and Turicibacter bilis as key Drivers in Colorectal Cancer Progression*.  
 > npj Biofilms and Microbiomes (Submitted).
 
 > Zenodo. [https://zenodo.org/records/15511511]([https://doi.org/10.5281/zenodo.15505402](https://zenodo.org/records/15511511))
@@ -129,7 +129,7 @@ If you use **CausoBiome**, please cite the following manuscript:
 ## Submitted Articles Related to the Framework
 
 > **Ascandari, A., Aminu, S., Benhida, R., & Daoud, R.** (2025).  
-> *Causal Inference and Species Interaction Networks Reveal Keystone Microbes in Genome-Resolved CRC Progression*.  
+> *A Genome- Resolved Causal Inference Study Identifies Streptococcus vestibularis and Turicibacter bilis as key Drivers in Colorectal Cancer Progression*.  
 > npj Biofilms and Microbiomes (Submitted).
 
 > **Ascandari, A., Aminu, S., Benhida, R., & Daoud, R.** (2025).  
