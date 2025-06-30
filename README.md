@@ -74,7 +74,7 @@ Microbial feature interactions are analyzed through:
 - Visualization of causal hubs and clusters
 
 ### 🔹 Step 6: External Validation  
-Using datasets like **PRJEB10878**, CausoBiome validates biomarker generalizability via:
+CausoBiome validates biomarker generalizability via:
 
 - Mann–Whitney tests in both internal and external datasets  
 - Directional trend comparison (CRC vs. Control)  
