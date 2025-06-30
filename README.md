@@ -1,53 +1,208 @@
-# CausoBiome: A Multi-Stage Pipeline for Microbiome-Driven Causal Discovery and Intervention Design
+# CausoBiome: A Microbiome Causality and Biomarker Discovery framework for Colorectal Cancer
 
-**CausoBiome** is a modular, stage-aware pipeline designed to identify, validate, and prioritize microbial species that are functionally and causally linked to disease progression. It is uniquely structured to model **ordinal clinical transitions**, specifically in Colorectal Cancer from *Healthy* to *Adenoma* to *Cancer*, and to uncover microbial contributors driving disease trajectory.CausoBiome builds upon high-quality, genome-resolved metagenomic preprocessing pipelines from the [`genome-resolved-urban-microbiome-biosurveillance`](https://github.com/SuleimanAminu/genome-resolved-urban-microbiome-biosurveillance) repository, specifically Modules `01_Bioinformatics` and `02_Quality_Batch_subsetting`. By extending these upstream workflows, CausoBiome introduces powerful downstream functionality including **ecological profiling**, **machine learning-based classification**, **causal inference via Double Machine Learning (DML)**, and **in silico microbial intervention modeling**. Purpose-built not merely to describe microbiome differences, CausoBiome infers **stage-specific microbial drivers**, models **inter-species interactions**, and simulates **therapeutic perturbations** bridging the gap between microbial discovery and translational action.
-Importantly, **CausoBiome is inherently extensible to other diseases with well-defined ordinal stages**. Its modular architecture, causal modeling core, and intervention simulation engine make it adaptable to any pathology where microbiome dynamics evolve progressively across clinical stages.
+**Lead Developer:** AbdulAziz Ascandari  
+**Affiliation:** Mohammed VI Polytechnic University  
+**License:** MIT  
+**Status:** In Development  
+**Last Updated:** June 2025
 
 ---
+
+## 🧠 Purpose
+
+CausoBiome is a modular, stage-aware, and functionally grounded microbiome analysis pipeline purpose-built to uncover **microbial features (species, ARGs, and VFs)** that are **functionally and causally linked** to human disease progression—most notably **colorectal cancer (CRC)**.
+
+Unlike conventional pipelines that stop at descriptive comparisons, CausoBiome is designed to **bridge microbiome discovery with translational insight** by leveraging modern statistical learning, causal inference, and external validation strategies.CausoBiome builds upon high-quality, genome-resolved metagenomic 
+
+preprocessing pipelines from the [genome-resolved-urban-microbiome-biosurveillance](https://github.com/SuleimanAminu/genome-resolved-urban-microbiome-biosurveillance) repository, specifically `Modules 01_Bioinformatics and 02_Quality_Batch_subsetting`
+
+---
+
+## 🎯 Design Philosophy
+
+CausoBiome is built around five central goals:
+
+1. **Stage-awareness**  
+   It models microbiome dynamics along **clinically meaningful transitions**, e.g.  
+   `Healthy → Adenoma → Cancer`, capturing directional microbial shifts rather than static contrasts.
+
+2. **Causality over correlation**  
+   Through **Double Machine Learning (DML)** and **Graph-based Causal Models**, CausoBiome estimates the **average treatment effect (ATE)** of each feature while controlling for key confounders (e.g., Age, BMI, Sex).
+
+3. **Functional resolution**  
+   It analyzes both **taxonomic** (species-level) and **functional** (ARGs, VFs) features to capture mechanisms of microbial influence, including antibiotic resistance, immune modulation, and virulence.
+
+4. **Feature robustness**  
+   Using **bootstrap stability**, **permutation importance**, and **ordinal forest modeling**, the pipeline identifies **robust biomarkers** that generalize across datasets.
+
+5. **Generalizability**  
+   By incorporating **external cohort validation**, trend consistency, and statistical replication, CausoBiome ensures that its findings are not dataset-specific artifacts.
+
+---
+
+## 🔁 How CausoBiome Works
+
+### 🔹 Step 1: Preprocessing and Normalization  
+CausoBiome builds upon genome-resolved upstream modules (adapted from [genome-resolved-urban-microbiome-biosurveillance](https://github.com/SuleimanAminu/genome-resolved-urban-microbiome-biosurveillance)) to deliver:
+
+- MAG binning & QC (completeness, contamination)
+- Species abundance normalization (Bracken)
+- ARG/VF normalization (CARD, VFDB + Hellinger transform)
+- Batch correction using ComBat / limma
+
+### 🔹 Step 2: Ecology and Diversity  
+It performs alpha/beta diversity analyses across disease stages using:
+
+- Shannon, Simpson, Richness indices  
+- Bray–Curtis dissimilarity and NMDS ordinations  
+- PERMANOVA and ANOSIM statistical tests  
+- Dispersion tests and Cliff’s delta effect size metrics
+
+### 🔹 Step 3: Machine Learning for Feature Selection  
+ML classifiers (Random Forest, SVM, LR, GB, Ordinal Forest) are benchmarked using:
+
+- Foldwise cross-validation  
+- Model comparison using Accuracy, Kappa, MCC, and F1 Macro  
+- Feature importance via permutation + bootstrap ranking  
+- Signature score projection and retraining on top biomarkers
+
+### 🔹 Step 4: Causal Inference via DML  
+Using the **econML** framework, CausoBiome applies **LinearDML** to:
+
+- Estimate ATE per microbial gene on CRC stage (Healthy–>Cancer)
+- Control for Age, BMI, Sex using machine-learned nuisance functions
+- Compute **confidence intervals**, **E-values**, and **required sample sizes**
+
+### 🔹 Step 5: Microbial Interaction Modeling  
+Microbial feature interactions are analyzed through:
+
+- Pairwise causal effect modeling (LinearDML on gene-gene products)
+- Identification of **synergistic vs. antagonistic** effects
+- Network construction with **node centrality metrics**
+- Visualization of causal hubs and clusters
+
+### 🔹 Step 6: External Validation  
+Using datasets like **PRJEB10878**, CausoBiome validates biomarker generalizability via:
+
+- Mann–Whitney tests in both internal and external datasets  
+- Directional trend comparison (CRC vs. Control)  
+- Concordance barplots and scatterplots  
+- Venn diagrams of statistical overlap
+
+---
+
+## 🧬 Who Should Use CausoBiome?
+
+CausoBiome is ideal for:
+
+- Microbiome researchers aiming for **causal inference beyond correlation**  
+- Cancer biologists exploring **functional microbial signatures**  
+- Clinical bioinformaticians validating **microbial biomarkers across cohorts**  
+- Systems biologists modeling **microbial interactions and networks**
 
 ## Pipeline Structure
 
 ```text
 CausoBiome/
-├── Module 1: Batch Correction & Ecology (from processed feature tables)
-│   ├── 01_Batch_correction.R
-│   ├── 02_Subset_ARG-VF_Species.py
-│   └── 03_Ecology.R
+├── 01_Quality_Normalization_Batch_ecology/
+│   ├── 01_mag_quality_metrics_analysis.py
+│   ├── 02_Taxon_counts_normalization.py
+│   ├── 03_Taxon_subset_pathogenic_samples.py
+│   ├── 04_taxon_batch_correction.R
+│   ├── 05_taxon_ecology.R
+│   ├── 06_arg_vf_normalization.py
+│   ├── 07_arg_vf_batch_correction.R
+│   ├── 08_arg_vf_ecology.R
+│   └── 01_README_Module_QC_Normalization.md
+│
+├── 02_Machine_learning_Feature_selection/
+│   ├── 01_ml_benchmark_ARG-VF.sh
+│   ├── 02_RF_TUNING_ARG-VF.sh
+│   ├── 03_ARG_VF_data_generation.py
+│   ├── 04_validation_model.sh
+│   ├── 05_Get_feature_importance.sh
+│   ├── 06_retrain_top_20.sh
+│   ├── 07_foldwise_Comparison_ARG-VF.R
+│   ├── 08_ARG_VF_Ordinal_forest.R
+│   ├── 09_taxon_Machine_learning_feature.sh
+│   ├── 10_Taxon_Ordinal_forest.R
+│   ├── 11_taxon_stats_correlations.py
+│   └── 02_README_Module_Machine_Learning_FULL.md
+│
+├── 03_Causal_Analysis/
+│   ├── 01_Complex_heatmap_arg_vf.R
+│   ├── 02_causal_analysis.py
+│   └── 03_README_Module_Causal_Analysis.md
+│
+├── 04_External_cohort_validation/
+│   ├── External_cohort_Validation.ipynb
+│   └── 04_README_Module_External_Validation.md
+│
+├── data/
+│   ├── combined_ARG_VFDB_final_DATA.csv
+│   ├── Metadata_Aligned_VF_ARG_CountMatrix.csv
+│   └── ... (external validation matrices)
+│
+└── README_CausoBiome_Detailed.md
 
-├── Module 2: Classification & Feature Importance
-│   ├── 04_RF_Hyperparametertuning.sh
-│   ├── 05_Benchmarking_ML_models.sh
-│   ├── 06_RF_Permutation_Stability_Importance.sh
-│   └── 07_Comparison_Script.R
-
-└── Module 3: Ordinal Causal Inference & Intervention Modeling
-    └── 08_Ordinal_Forest_Causal_Intervention_Analysis.py
 ```
 
 ---
 
-## Purpose and Novelty
+# 🚀 What Makes CausoBiome Novel?
 
-While prior workflows end at taxonomic profiling or classification, **CausoBiome** extends microbiome analytics into the **causal and translational domain**. It enables:
+CausoBiome differs from typical microbiome pipelines by addressing not just *what is different* but *what functionally drives disease progression*. Its novelty lies in several aspects:
 
-- High-resolution species-level modeling of disease progression 
-- Robust batch correction and functional species selection (VFDB, CARD)
-- Benchmarking of supervised classifiers for stage prediction
-- Causal estimation of microbial effects via Double Machine Learning (DML)
-- Network-based modeling of synergistic and antagonistic microbial interactions
-- Simulated interventions for therapeutic prioritization based on risk impact
+## 1. Stage-Aware Ordinal Modeling
+
+- Directly models disease trajectory: **Healthy → Adenoma → Cancer**
+- Employs **Ordinal Forests** and **Double Machine Learning (DML)** to capture progression-aware microbial signals
+
+## 2. Causal Inference Core
+
+- Implements **DML via econML** to estimate **Average Treatment Effects (ATEs)** per feature
+- Controls for covariates like **Age, Sex, BMI** using flexible machine-learned nuisance models
+- Computes:
+  - **E-values** for sensitivity to unmeasured confounding  
+  - **Bootstrap confidence intervals** for robustness  
+  - **Required sample sizes** for validation studies
+
+## 3. Synthetic Cohort Generation
+
+- Produces **PCA-enhanced synthetic metagenomes**
+- Enables model testing under both **balanced** and **realistic class distributions**
+
+## 4. Intervention-Ready Outputs
+
+- Identifies **synergistic** and **antagonistic** microbial gene interactions
+- Constructs **causal and co-occurrence networks** from inferred ATE effects
+- Annotates ARGs and VFs with known mechanisms and **matched microbial species**
 
 ---
 
-##  Key Functional Highlights
+# ⚙️ Key Functional Highlights
 
-| Module | Functionality |
-|--------|---------------|
-| Batch Correction & Ecology | ComBat correction, Hellinger transform, NMDS/CCA ordination |
-| Classification | RF model tuning, model benchmarking, robust feature selection |
-| Causal Inference | ATE estimation, bootstrap & E-value robustness, network synergy modeling |
-| Intervention Modeling | ARR, RR, OR simulation, composite prioritization score (CIS) |
+| Component             | Description                                                                 |
+|----------------------|-----------------------------------------------------------------------------|
+| **Ecological Analysis**  | Rich alpha/beta diversity metrics, NMDS ordination, dispersion tests         |
+| **Machine Learning**      | Foldwise benchmarking of RF, SVM, KNN, GB, Logistic Regression             |
+| **Feature Robustness**    | Combined permutation importance + bootstrap stability (Top 20 features)    |
+| **Ordinal Forest**        | Identifies rank-aware discriminative genes and taxa                       |
+| **Signature Score**       | Mean and PCA1 scores for individual-level CRC burden assessment           |
+| **Causal Estimation**     | ATEs from LinearDML with Random Forests as base learners                  |
+| **Interaction Effects**   | Gene × gene product modeling for combined causal effects                  |
+| **External Validation**   | Tests trend consistency in independent cohort (e.g., PRJEB10878)          |
+| **Heatmaps & Networks**   | Visualizes consistent biomarkers and their interaction hubs               |
 
+---
+
+# 🔄 Extensibility
+
+CausoBiome is designed with **modularity and disease-agnostic flexibility**:
+
+- Supports any disease with **ordered clinical stages** (e.g., liver fibrosis, IBD, NAFLD)
+- Compatible with **metabolomic**, **proteomic**, or **transcriptomic** feature matrices
+- Adaptable to **longitudinal** or **time-series** microbiome datasets
 ---
 
 ## Pipeline Origin
@@ -56,7 +211,7 @@ CausoBiome is an extension of the upstream **genome-resolved-urban-microbiome-bi
 
 **GitHub**: [genome-resolved-urban-microbiome-biosurveillance](https://github.com/SuleimanAminu/genome-resolved-urban-microbiome-biosurveillance)
 
-- Users should start from the `01_Bioinformatics` module and then proceed to the `02_Quality_batch_subsetting` module by running specifically scripts `04_mag_quality_metrics_analysis.py` and `05_normalize_species_counts.py`
+- Users should start from the `01_Bioinformatics` module and then proceed to the `02_Quality_batch_subsetting` module by running specifically scripts `normalize_species_counts.py`
 - Then transition into **CausoBiome** starting from `01_Batch_correction.R`
 
 ---
@@ -127,7 +282,7 @@ Zenodo. [https://zenodo.org/records/15511511]([https://doi.org/10.5281/zenodo.15
 ## Submitted Articles Related to the Framework
 
 > **Ascandari, A., Aminu, S., Benhida, R., & Daoud, R.** (2025).  
-> *A Genome- Resolved Causal Inference Study Identifies Streptococcus vestibularis and Turicibacter bilis as key Drivers in Colorectal Cancer Progression*.  
+> *A Core Genome-Resolved Microbial Resistome–Virulome Hub Causally Drives Colorectal Cancer Progression*.  
 > Nature Communications (Submitted).
 
 
