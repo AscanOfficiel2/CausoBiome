@@ -230,10 +230,10 @@ CausoBiome is an extension of the upstream **genome-resolved-urban-microbiome-bi
 - Diversity metrics, ordination plots
 - Classification metrics (F1, MCC, AUROC)
 - Feature importance/stability plots
-- Per-species causal estimates (DML ATE)
+- Microbial features causal estimates (DML ATE)
 - Robustness plots (E-values, bootstraps)
 - Microbial interaction networks (weighted, annotated)
-- Intervention outcome simulations and priority tiers
+
 
 ---
 
