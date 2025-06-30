@@ -1,43 +1,77 @@
 
-# Python
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-*.ipynb_checkpoints
-.env
-*.pkl
-*.joblib
+*$py.class
 
-# R
-.Rhistory
-.RData
+# R and Rmd
+*.Rhistory
+*.RData
+*.Rproj
 .Rproj.user/
-.Rproj
-*.Rout
+*.Rcheck
+*.RDS
 
-# Slurm HPC logs
+# IPython / Jupyter
+.ipynb_checkpoints/
+*.ipynb~
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Output folders
+/data/output/
+*/outputs/
+*.log
 *.out
 *.err
-*.log
 
-# Data outputs
-*.csv
-*.tsv
-*.xlsx
-*.h5
-*.json
+# Environment and virtualenv
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
 
-# Plots and images
+# Editor folders
+.vscode/
+.Rhistory
+.idea/
+
+# Python virtualenv and cache
+*.egg-info/
+.eggs/
+pip-log.txt
+pip-delete-this-directory.txt
+__pypackages__/
+
+# Test and temp files
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Large result files
 *.tiff
 *.png
 *.pdf
-*.svg
+*.csv
+*.xlsx
+*.sav
 
-# System and editor files
-.DS_Store
-.vscode/
-.idea/
+# Model and ML outputs
+*.pkl
+*.joblib
 
-# Environment files
-*.conda
-*.mamba
-*.venv
+# Synthetic data and intermediate files
+*synthetic_*.csv
+*bootstrap*.csv
+*DML_Causal_Effects*.csv
+*Filtered_biomarker*.csv
+
+# External validation results
+*Trend_Comparison.csv
+*Significance_Comparison*.csv
+
