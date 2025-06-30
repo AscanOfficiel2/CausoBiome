@@ -34,7 +34,7 @@ CausoBiome is built around five central goals:
 
 
 ### 🔹 Step 1: Preprocessing and Normalization  
-CausoBiome builds upon genome-resolved upstream modules (adapted from [genome-resolved-urban-microbiome-biosurveillance](https://github.com/SuleimanAminu/genome-resolved-urban-microbiome-biosurveillance)) starting from the `01_Bioinformatics` module and then proceed to the `02_Quality_batch_subsetting` module by running specifically the script `normalize_species_counts.py`.Then transition into **CausoBiome** starting from module `01_Quality_Normalization_Batch_ecology from the script: `01_mag_quality_metrics_analysis.py` to deliver:
+CausoBiome builds upon genome-resolved upstream modules (adapted from [genome-resolved-urban-microbiome-biosurveillance](https://github.com/SuleimanAminu/genome-resolved-urban-microbiome-biosurveillance)) starting from the `01_Bioinformatics` module and then proceed to the `02_Quality_batch_subsetting` module by running specifically the script `normalize_species_counts.py`.Then transition into **CausoBiome** starting from module `01_Quality_Normalization_Batch_ecology` from the script `01_mag_quality_metrics_analysis.py` to deliver:
 
 - MAG binning & QC (completeness, contamination)
 - Species abundance normalization (Bracken)
