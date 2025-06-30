@@ -278,7 +278,7 @@ If you use **CausoBiome**, please cite the following manuscript:
 ## Submitted Articles Related to the Framework
 
 > **Ascandari, A., Aminu, S., Benhida, R., & Daoud, R.** (2025).  
-> *A Core Genome-Resolved Microbial Resistome–Virulome Hub Causally Drives Colorectal Cancer Progression* (Submitted).
+> *A Core Genome-Resolved Microbial Resistome–Virulome Hub Causally Drives Colorectal Cancer Progression* (under review).
 
 
 ## Contact
