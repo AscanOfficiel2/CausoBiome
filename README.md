@@ -263,8 +263,6 @@ MIT License — free to use, adapt, and cite with attribution.
 This Framework, otherwise referred to CausoBiome is currently part of a manuscript under peer review.
 This repository is shared under the MIT License to promote transparency and reproducibility.
 
-A Zenodo DOI has been assigned to ensure formal authorship record.
-
 We kindly request that you do not republish or repackage this methodology before journal publication.
 
 
@@ -274,16 +272,13 @@ We kindly request that you do not republish or repackage this methodology before
 If you use **CausoBiome**, please cite the following manuscript:
 
 > **Ascandari, A., Aminu, S., Benhida, R., & Daoud, R.** (2025).  
-> *A Genome- Resolved Causal Inference Study Identifies Streptococcus vestibularis and Turicibacter bilis as key Drivers in Colorectal Cancer Progression*.  
-Zenodo. [https://zenodo.org/records/15511511]([https://doi.org/10.5281/zenodo.15505402](https://zenodo.org/records/15511511))
+> *A Core Genome-Resolved Microbial Resistome–Virulome Hub Causally Drives Colorectal Cancer Progression*.  
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15511511.svg)](https://doi.org/10.5281/zenodo.15511511) 
 
 ## Submitted Articles Related to the Framework
 
 > **Ascandari, A., Aminu, S., Benhida, R., & Daoud, R.** (2025).  
-> *A Core Genome-Resolved Microbial Resistome–Virulome Hub Causally Drives Colorectal Cancer Progression*.  
-> Nature Communications (Submitted).
+> *A Core Genome-Resolved Microbial Resistome–Virulome Hub Causally Drives Colorectal Cancer Progression* (Submitted).
 
 
 ## Contact
