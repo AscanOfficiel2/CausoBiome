@@ -1,13 +1,5 @@
 # CausoBiome: A Microbiome Causality and Biomarker Discovery framework for Colorectal Cancer
 
-**Lead Developer:** AbdulAziz Ascandari  
-**Affiliation:** Mohammed VI Polytechnic University  
-**License:** MIT  
-**Status:** In Development  
-**Last Updated:** June 2025
-
----
-
 ## 🧠 Purpose
 
 CausoBiome is a modular, stage-aware, and functionally grounded microbiome analysis pipeline purpose-built to uncover **microbial features (species, ARGs, and VFs)** that are **functionally and causally linked** to human disease progression—most notably **colorectal cancer (CRC)**.
