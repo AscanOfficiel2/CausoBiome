@@ -194,9 +194,6 @@ CausoBiome is an extension of the upstream **genome-resolved-urban-microbiome-bi
 
 **GitHub**: [genome-resolved-urban-microbiome-biosurveillance](https://github.com/SuleimanAminu/genome-resolved-urban-microbiome-biosurveillance)
 
-- Users should start from the `01_Bioinformatics` module and then proceed to the `02_Quality_batch_subsetting` module by running specifically scripts `normalize_species_counts.py`
-- Then transition into **CausoBiome** starting from module `01_Quality_Normalization_Batch_ecology from the script: `01_mag_quality_metrics_analysis.py`.
-
 ---
 
 ## ️ Requirements
