@@ -6,7 +6,7 @@ CausoBiome is a modular, stage-aware, and functionally grounded microbiome analy
 
 Unlike conventional pipelines that stop at descriptive comparisons, CausoBiome is designed to **bridge microbiome discovery with translational insight** by leveraging modern statistical learning, causal inference, and external validation strategies.CausoBiome builds upon high-quality, genome-resolved metagenomic 
 
-preprocessing pipelines from the [genome-resolved-urban-microbiome-biosurveillance](https://github.com/SuleimanAminu/genome-resolved-urban-microbiome-biosurveillance) repository, specifically `Module 01_Bioinformatics`
+preprocessing pipelines from the [genome-resolved-urban-microbiome-biosurveillance](https://github.com/SuleimanAminu/genome-resolved-urban-microbiome-biosurveillance) repository, specifically `Module 01_Bioinformatics` and run the scripts `01_run.sh`  and then `02_fastq_screen.sh` before continuing to `module 01` of Causobiome.
 
 ---
 
