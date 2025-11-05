@@ -6,7 +6,7 @@ CausoBiome is a modular, stage-aware, and functionally grounded microbiome analy
 
 Unlike conventional pipelines that stop at descriptive comparisons, CausoBiome is designed to **bridge microbiome discovery with translational insight** by leveraging modern statistical learning, causal inference, and external validation strategies.CausoBiome builds upon high-quality, genome-resolved metagenomic 
 
-preprocessing pipelines from the [genome-resolved-urban-microbiome-biosurveillance](https://github.com/SuleimanAminu/genome-resolved-urban-microbiome-biosurveillance) repository, specifically `Modules 01_Bioinformatics and 02_Quality_Batch_subsetting`
+preprocessing pipelines from the [genome-resolved-urban-microbiome-biosurveillance](https://github.com/SuleimanAminu/genome-resolved-urban-microbiome-biosurveillance) repository, specifically `Modules 01_Bioinformatics`
 
 ---
 
@@ -25,7 +25,7 @@ CausoBiome is built around five central goals:
    It analyzes both **taxonomic** (species-level) and **functional** (ARGs, VFs) features to capture mechanisms of microbial influence, including antibiotic resistance, immune modulation, and virulence.
 
 4. **Feature robustness**  
-   Using **bootstrap stability**, **permutation importance**, and **ordinal forest modeling**, the pipeline identifies **robust biomarkers** that generalize across datasets.
+   Using **bootstrap stability**, and  **permutation importance**the pipeline identifies **robust biomarkers** that generalize across datasets.
 
 5. **Generalizability**  
    By incorporating **external cohort validation**, trend consistency, and statistical replication, CausoBiome ensures that its findings are not dataset-specific artifacts.
@@ -33,167 +33,159 @@ CausoBiome is built around five central goals:
 ---
 
 
-### 🔹 Step 1: Preprocessing and Normalization  
-CausoBiome builds upon genome-resolved upstream modules (adapted from [genome-resolved-urban-microbiome-biosurveillance](https://github.com/SuleimanAminu/genome-resolved-urban-microbiome-biosurveillance)) starting from the `01_Bioinformatics` module and then proceed to the `02_Quality_batch_subsetting` module by running specifically the script `normalize_species_counts.py`.Then transition into **CausoBiome** starting from module `01_Quality_Normalization_Batch_ecology` from the script `01_mag_quality_metrics_analysis.py` to deliver:
 
-- MAG binning & QC (completeness, contamination)
-- Species abundance normalization (Bracken)
-- ARG/VF normalization (CARD, VFDB + Hellinger transform)
-- Batch correction using ComBat / limma
+## 🧩 Modular Architecture
 
-### 🔹 Step 2: Ecology and Diversity  
-It performs alpha/beta diversity analyses across disease stages using:
+CausoBiome comprises two analytical layers:
 
-- Shannon, Simpson, Richness indices  
-- Bray–Curtis dissimilarity and NMDS ordinations  
-- PERMANOVA and ANOSIM statistical tests  
-- Dispersion tests and Cliff’s delta effect size metrics
+| Module | Description | Focus |
+|--------|-------------|--------|
+| **01_species_analysis** | Species-level ecological and machine learning analysis | Taxonomic profiling, diversity, ML biomarker discovery |
+| **02_functional_arg_vf** | Functional-level (ARG & VF) causal and risk modeling | Functional inference, causal estimation, translational biomarkers |
 
-### 🔹 Step 3: Machine Learning for Feature Selection  
-ML classifiers (Random Forest, SVM, LR, GB, Ordinal Forest) are benchmarked using:
-
-- Foldwise cross-validation  
-- Model comparison using Accuracy, Kappa, MCC, and F1 Macro  
-- Feature importance via permutation + bootstrap ranking  
-- Signature score projection and retraining on top biomarkers
-
-### 🔹 Step 4: Causal Inference via DML  
-Using the **econML** framework, CausoBiome applies **LinearDML** to:
-
-- Estimate ATE per microbial gene on CRC stage (Healthy–>Cancer)
-- Control for Age, BMI, Sex using machine-learned nuisance functions
-- Compute **confidence intervals**, **E-values**, and **required sample sizes**
-
-### 🔹 Step 5: Microbial Interaction Modeling  
-Microbial feature interactions are analyzed through:
-
-- Pairwise causal effect modeling (LinearDML on gene-gene products)
-- Identification of **synergistic vs. antagonistic** effects
-- Network construction with **node centrality metrics**
-- Visualization of causal hubs and clusters
-
-### 🔹 Step 6: External Validation  
-CausoBiome validates biomarker generalizability via:
-
-- Mann–Whitney tests in both internal and external datasets  
-- Directional trend comparison (CRC vs. Control)  
-- Concordance barplots and scatterplots  
-- Venn diagrams of statistical overlap
+Each module is fully self-contained and executable independently, with standardized I/O formats and high-resolution publication outputs.
 
 ---
 
-## 🧬 Who Should Use CausoBiome?
+## 📦 Module Summaries
 
-CausoBiome is ideal for:
+### 🔹 **Module 01 — Species-Level Analysis**
 
-- Microbiome researchers aiming for **causal inference beyond correlation**  
-- Cancer biologists exploring **functional microbial signatures**  
-- Clinical bioinformaticians validating **microbial biomarkers across cohorts**  
-- Systems biologists modeling **microbial interactions and networks**
+Performs **species-level ecological modeling and predictive biomarker discovery**, covering contamination filtering, normalization, ecological diagnostics, and machine learning benchmarking.
 
-## Pipeline Structure
+**Key Functionalities**
+- Contaminant removal and assembly QC (`FastQ Screen`, `QUAST`)
+- Cross-cohort taxonomic normalization and merging
+- CLR + batch correction with `limma`
+- Ecological diversity (Shannon, Simpson, PERMANOVA)
+- Indicator species analysis (`IndVal.g`)
+- Machine learning benchmarking (RF, GB, LR, SVM, DT)
+- Robust feature importance and consensus biomarkers
 
-```text
-CausoBiome/
-├── 01_Quality_Normalization_Batch_ecology/
-│   ├── 01_mag_quality_metrics_analysis.py
-│   ├── 02_Taxon_counts_normalization.py
-│   ├── 03_Taxon_subset_pathogenic_samples.py
-│   ├── 04_taxon_batch_correction.R
-│   ├── 05_taxon_ecology.R
-│   ├── 06_arg_vf_normalization.py
-│   ├── 07_arg_vf_batch_correction.R
-│   ├── 08_arg_vf_ecology.R
-│   └── 01_README_Module_QC_Normalization.md
-│
-├── 02_Machine_learning_Feature_selection/
-│   ├── 01_ml_benchmark_ARG-VF.sh
-│   ├── 02_RF_TUNING_ARG-VF.sh
-│   ├── 03_ARG_VF_data_generation.py
-│   ├── 04_validation_model.sh
-│   ├── 05_Get_feature_importance.sh
-│   ├── 06_retrain_top_20.sh
-│   ├── 07_foldwise_Comparison_ARG-VF.R
-│   ├── 08_ARG_VF_Ordinal_forest.R
-│   ├── 09_taxon_Machine_learning_feature.sh
-│   ├── 10_Taxon_Ordinal_forest.R
-│   ├── 11_taxon_stats_correlations.py
-│   └── 02_README_Module_Machine_Learning_FULL.md
-│
-├── 03_Causal_Analysis/
-│   ├── 01_Complex_heatmap_arg_vf.R
-│   ├── 02_causal_analysis.py
-│   └── 03_README_Module_Causal_Analysis.md
-│
-├── 04_External_cohort_validation/
-│   ├── External_cohort_Validation.ipynb
-│   └── 04_README_Module_External_Validation.md
-│
-├── data/
-│   ├── combined_ARG_VFDB_final_DATA.csv
-│   ├── Metadata_Aligned_VF_ARG_CountMatrix.csv
-│   └── ... (external validation matrices)
-│
-└── README_CausoBiome_Detailed.md
+**Representative Outputs**
+- `Species_expression_matrix.csv`  
+- `PERMANOVA_R2_comparison_fixed.png`  
+- `Alpha_Shannon.tiff`, `NMDS_CLR_Euclidean_AllGroups.tiff`  
+- `Consensus_Top30_Barplot.tiff`
 
+**Scripts**
+```
+01_Fastqscreen_contigs_quality.py
+02_Taxon_counts_normalization.py
+03_batch_correction_species.R
+04_Reference_species_catalog_building.py
+05_Overlap_with_reference.R
+06_Ecology_prevalence.R
+07_Indicator_Specie_Analysis.R
+08_ML_training_test.py
+09_ML_feature_importance.py
 ```
 
 ---
 
-# 🚀 What Makes CausoBiome Novel?
+### 🔹 **Module 02 — Functional ARG/VF Analysis and Causal Modeling**
 
-CausoBiome differs from typical microbiome pipelines by addressing not just *what is different* but *what functionally drives disease progression*. Its novelty lies in several aspects:
+Performs **functional-level causal inference and translational risk modeling** using antimicrobial resistance genes (ARGs) and virulence factors (VFs).
 
-## 1. Stage-Aware Ordinal Modeling
+**Key Functionalities**
+- Normalization and filtering of CARD & VFDB gene hits  
+- Functional ecology and total load correlation analysis  
+- Causal modeling via **PLS–Double Machine Learning (DML)**  
+- Identification of progression vs. protective functional axes (PLS₁, PLS₃)  
+- Development of a **logistic risk score (DAI_logit)**  
+- Cross-cohort validation of functional gene signatures
 
-- Directly models disease trajectory: **Healthy → Adenoma → Cancer**
-- Employs **Ordinal Forests** and **Double Machine Learning (DML)** to capture progression-aware microbial signals
+**Representative Outputs**
+- `Combined_ARG_VFDB_CLR_batch_corrected.csv`  
+- `Causal_DAG_ARG_VF_to_CRC.pdf`  
+- `DML_PLS_Bootstrap_Summary.csv`  
+- `ROC_DAIlogit_OOF.png`, `RiskTable_OOF.csv`  
+- `External_ROC_LogisticRegression_Publication.png`
 
-## 2. Causal Inference Core
-
-- Implements **DML via econML** to estimate **Average Treatment Effects (ATEs)** per feature
-- Controls for covariates like **Age, Sex, BMI** using flexible machine-learned nuisance models
-- Computes:
-  - **E-values** for sensitivity to unmeasured confounding  
-  - **Bootstrap confidence intervals** for robustness  
-  - **Required sample sizes** for validation studies
-
-## 3. Synthetic Cohort Generation
-
-- Produces **PCA-enhanced synthetic metagenomes**
-- Enables model testing under both **balanced** and **realistic class distributions**
-
-## 4. Intervention-Ready Outputs
-
-- Identifies **synergistic** and **antagonistic** microbial gene interactions
-- Constructs **causal and co-occurrence networks** from inferred ATE effects
-- Annotates ARGs and VFs with known mechanisms and **matched microbial species**
-
----
-
-# ⚙️ Key Functional Highlights
-
-| Component             | Description                                                                 |
-|----------------------|-----------------------------------------------------------------------------|
-| **Ecological Analysis**  | Rich alpha/beta diversity metrics, NMDS ordination, dispersion tests         |
-| **Machine Learning**      | Foldwise benchmarking of RF, SVM, KNN, GB, Logistic Regression             |
-| **Feature Robustness**    | Combined permutation importance + bootstrap stability (Top 20 features)    |
-| **Ordinal Forest**        | Identifies rank-aware discriminative genes and taxa                       |
-| **Signature Score**       | Mean and PCA1 scores for individual-level CRC burden assessment           |
-| **Causal Estimation**     | ATEs from LinearDML with Random Forests as base learners                  |
-| **Interaction Effects**   | Gene × gene product modeling for combined causal effects                  |
-| **External Validation**   | Tests trend consistency in independent cohort (e.g., PRJEB10878)          |
-| **Heatmaps & Networks**   | Visualizes consistent biomarkers and their interaction hubs               |
+**Scripts**
+```
+01_arg_vf_preprocessing.py
+02_ARG_VF_Genes_filtering.R
+03_Batch_correction.R
+04_Ecology_Prevalence_ARG_VF.R
+05_Nuisance_models.py
+06_DAG_analysis.R
+07_causal_review.py
+08_risk_score.py
+09_external_validation_review.py
+```
 
 ---
 
-# 🔄 Extensibility
+## ⚙️ Environment Setup
 
-CausoBiome is designed with **modularity and disease-agnostic flexibility**:
+### Python (≥3.9)
+```bash
+pip install pandas numpy seaborn matplotlib scikit-learn scipy openpyxl econml tqdm statsmodels networkx adjustText upsetplot matplotlib-venn
+```
 
-- Supports any disease with **ordered clinical stages** (e.g., liver fibrosis, IBD, NAFLD)
-- Compatible with **metabolomic**, **proteomic**, or **transcriptomic** feature matrices
-- Adaptable to **longitudinal** or **time-series** microbiome datasets
+### R (≥4.3)
+```r
+install.packages(c(
+  "limma", "compositions", "vegan", "ggplot2", "gridExtra", "umap", "Rtsne",
+  "ComplexHeatmap", "circlize", "igraph", "ggraph", "FSA", "pheatmap",
+  "RColorBrewer", "ggvenn", "patchwork", "UpSetR", "dagitty"
+))
+```
+
+---
+
+## 🚀 Execution Workflow
+
+### 🧩 Species-Level Module
+```bash
+python 01_Fastqscreen_contigs_quality.py
+python 02_Taxon_counts_normalization.py
+Rscript 03_batch_correction_species.R
+python 04_Reference_species_catalog_building.py
+Rscript 05_Overlap_with_reference.R
+Rscript 06_Ecology_prevalence.R
+Rscript 07_Indicator_Specie_Analysis.R
+python 08_ML_training_test.py
+python 09_ML_feature_importance.py
+```
+
+### 🧬 Functional ARG/VF Module
+```bash
+python 01_arg_vf_preprocessing.py
+Rscript 02_ARG_VF_Genes_filtering.R
+Rscript 03_Batch_correction.R
+Rscript 04_Ecology_Prevalence_ARG_VF.R
+python 05_Nuisance_models.py
+Rscript 06_DAG_analysis.R
+python 07_causal_review.py
+python 08_risk_score.py
+python 09_external_validation_review.py
+```
+
+---
+
+## 🧾 Outputs Overview
+
+| Category | Example Outputs |
+|-----------|----------------|
+| **Ecological Metrics** | Shannon/Simpson indices, PERMANOVA tables |
+| **Functional Profiles** | ARG/VF load, mechanism abundance tables |
+| **Causal Estimates** | ATEs, bootstrap intervals, E-values |
+| **ML Benchmarks** | Accuracy, ROC-AUC, feature stability plots |
+| **Risk Stratification** | DAI_logit scores, calibration curves |
+| **Validation Metrics** | Concordance and directionality across cohorts |
+
+---
+
+## 🧪 Notes
+
+- Each submodule is self-contained and can be executed independently.  
+- DAG analysis defines the adjustment set for DML causal estimation.  
+- All figures are saved as **TIFF (600 dpi)** ready for publication.  
+- Steps involving DML or ML benchmarking require ≥64 GB RAM for large datasets.  
+- Causal inference results are exploratory; biological validation is recommended.
+
 ---
 
 ## Pipeline Origin
