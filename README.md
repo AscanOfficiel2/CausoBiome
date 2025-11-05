@@ -19,7 +19,7 @@ CausoBiome is built around five central goals:
    `Healthy → Adenoma → Cancer`, capturing directional microbial shifts rather than static contrasts.
 
 2. **Causality over correlation**  
-   Through **Double Machine Learning (DML)** CausoBiome estimates the **average treatment effect (ATE)** of each feature while controlling for key confounders (e.g., Age, BMI, Sex).
+   Through **Partial Least squares (PLS) dimentionality reduction of features and Double Machine Learning (DML)** CausoBiome estimates the **average treatment effect (ATE)** of each PLS component while controlling for key confounders (e.g., Age, BMI, Sex).
 
 3. **Functional resolution**  
    It analyzes both **taxonomic** (species-level) and **functional** (ARGs, VFs) features to capture mechanisms of microbial influence, including antibiotic resistance, immune modulation, and virulence.
