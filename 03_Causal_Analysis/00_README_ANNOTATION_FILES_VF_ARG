@@ -1,7 +1,0 @@
-Prepare the annotation files for the CRAD and VFDB by copying or selecting these columns. 
-CARD :Sample_ID	 Gene	Matched_Species	AMR Gene Family	Resistance_Mechanism	Antibiotics_Class
-VF :   Sample_ID	Matched_Species	  Gene	Protein	Resistance_Mechanism	Class_Mechanism
-
-NB: This is important before executing the causal analysis module downstream.
-
-
