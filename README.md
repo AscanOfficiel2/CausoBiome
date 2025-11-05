@@ -216,11 +216,11 @@ CausoBiome is an extension of the upstream **genome-resolved-urban-microbiome-bi
 ## Output Highlights
 
 - Diversity metrics, ordination plots
-- Classification metrics (F1, MCC, AUROC)
+- Classification metrics (F1, AUROC etc.)
 - Feature importance/stability plots
 - Microbial features causal estimates (DML ATE)
 - Robustness plots (E-values, bootstraps)
-- Microbial interaction networks (weighted, annotated)
+- Gene-gene interaction networks (weighted, annotated)
 
 
 ---
@@ -229,8 +229,7 @@ CausoBiome is an extension of the upstream **genome-resolved-urban-microbiome-bi
 
 - Functional microbiome biomarker discovery
 - Ecological profiling of CRC microbiomes
-- Translational microbiome-based risk stratification
-- Design of synthetic consortia or microbial interventions
+- Translational functional microbiome-based risk stratification
 
 ---
 
