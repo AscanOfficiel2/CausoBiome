@@ -251,13 +251,13 @@ We kindly request that you do not republish or repackage this methodology before
 If you use **CausoBiome**, please cite the following manuscript:
 
 > **Ascandari, A., Aminu, S., Benhida, R., & Daoud, R.** (2025).  
-> *Genome-resolved metagenomics with causal modelling implicates a resistome and virulome module in colorectal cancer*.  
+> *Dual ecological strategies underpin the functional balance of the colorectal cancer microbiome*.  
 
 
 ## Submitted Articles Related to the Framework
 
 > **Ascandari, A., Aminu, S., Benhida, R., & Daoud, R.** (2025).  
-> *Genome-resolved metagenomics with causal modelling implicates a resistome and virulome module in colorectal cancer* (under review; npj Biofilms and Microbiomes).
+> *Dual ecological strategies underpin the functional balance of the colorectal cancer microbiome* (under review; npj Biofilms and Microbiomes).
 
 
 ## Contact
