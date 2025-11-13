@@ -88,7 +88,7 @@ Performs **functional-level causal inference and translational risk modeling** u
 **Key Functionalities**
 - Normalization and filtering of CARD & VFDB gene hits  
 - Functional ecology and total load correlation analysis  
-- Causal modeling via **PLS–Double Machine Learning (DML)**  
+- Directional association  modeling via **PLS–Double Machine Learning (DML)**  
 - Identification of progression vs. protective functional axes (PLS₁, PLS₃)  
 - Development of a **logistic risk score (DAI_logit)**  
 - Cross-cohort validation of functional gene signatures
@@ -169,7 +169,7 @@ python 09_external_validation_review.py
 |-----------|----------------|
 | **Ecological Metrics** | Shannon/Simpson indices, PERMANOVA tables |
 | **Functional Profiles** | ARG/VF load, mechanism abundance tables |
-| **Causal Estimates** | ATEs, bootstrap intervals, E-values |
+| **Average Treatment effects estimation** | ATEs, bootstrap intervals, E-values |
 | **ML Benchmarks** | Accuracy, ROC-AUC, feature stability plots |
 | **Risk Stratification** | DAI_logit scores, calibration curves |
 | **Validation Metrics** | Concordance and directionality across cohorts |
@@ -233,7 +233,6 @@ CausoBiome is an extension of the upstream **genome-resolved-urban-microbiome-bi
 
 
 ## License
-
 
 MIT License — free to use, adapt, and cite with attribution.
 
