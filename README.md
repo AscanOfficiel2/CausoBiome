@@ -1,6 +1,6 @@
 # CausoBiome: A Microbiome Causality and Biomarker Discovery framework for Colorectal Cancer
 
-## 🧠 Purpose
+## Purpose
 
 CausoBiome is a modular, stage-aware, and functionally grounded microbiome analysis pipeline purpose-built to uncover **microbial features (species, ARGs, and VFs)** that are **functionally and causally linked** to human disease progression most notably **colorectal cancer (CRC)**.
 
@@ -8,7 +8,7 @@ Unlike conventional pipelines that stop at descriptive comparisons, CausoBiome i
 
 ---
 
-## 🎯 Design Philosophy
+## Design Philosophy
 
 CausoBiome is built around five central goals:
 
@@ -32,7 +32,7 @@ CausoBiome is built around five central goals:
 
 
 
-## 🧩 Modular Architecture
+## Modular Architecture
 
 CausoBiome comprises two analytical layers:
 
@@ -45,9 +45,9 @@ Each module is fully self-contained and executable independently, with standardi
 
 ---
 
-## 📦 Module Summaries
+## Module Summaries
 
-### 🔹 **Module 01 — Species-Level Analysis**
+### **Module 01 — Species-Level Analysis**
 
 Performs **species-level ecological modeling and predictive biomarker discovery**, covering contamination filtering, normalization, ecological diagnostics, and machine learning benchmarking.
 
@@ -133,9 +133,9 @@ install.packages(c(
 
 ---
 
-## 🚀 Execution Workflow
+## Execution Workflow
 
-### 🧩 Species-Level Module
+### Species-Level Module
 ```bash
 python 01_Fastqscreen_contigs_quality.py
 python 02_Taxon_counts_normalization.py
@@ -163,7 +163,7 @@ python 09_external_validation_review.py
 
 ---
 
-## 🧾 Outputs Overview
+## Outputs Overview
 
 | Category | Example Outputs |
 |-----------|----------------|
@@ -176,7 +176,7 @@ python 09_external_validation_review.py
 
 ---
 
-## 🧪 Notes
+## Notes
 
 - Each submodule is self-contained and can be executed independently.  
 - DAG analysis defines the adjustment set for DML causal estimation.  
