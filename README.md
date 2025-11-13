@@ -4,7 +4,7 @@
 
 CausoBiome is a modular, stage-aware, and functionally grounded microbiome analysis pipeline purpose-built to uncover **microbial features (species, ARGs, and VFs)** that are **functionally and causally linked** to human disease progression most notably **colorectal cancer (CRC)**.
 
-Unlike conventional pipelines that stop at descriptive comparisons, CausoBiome is designed to **bridge microbiome discovery with translational insight** by leveraging modern statistical learning, causal inference, and external validation strategies.CausoBiome builds upon high-quality, genome-resolved metagenomic 
+Unlike conventional pipelines that stop at descriptive comparisons, CausoBiome is designed to **bridge microbiome discovery with translational insight** by leveraging modern statistical learning, causal inference, and external validation strategies.CausoBiome builds upon high-quality, metagenomic 
 
 preprocessing pipelines from the [genome-resolved-urban-microbiome-biosurveillance](https://github.com/SuleimanAminu/genome-resolved-urban-microbiome-biosurveillance) repository, specifically `Module 01_Bioinformatics` and run the scripts `01_run.sh`  and then `02_fastq_screen.sh` before continuing to `module 01` of Causobiome.
 
@@ -22,7 +22,7 @@ CausoBiome is built around five central goals:
    Through **Partial Least squares (PLS) dimentionality reduction of features and Double Machine Learning (DML)** CausoBiome estimates the **average treatment effect (ATE)** of each PLS component while controlling for key confounders (e.g., Age, BMI, Sex).
 
 3. **Functional resolution**  
-   It analyzes both **taxonomic** (species-level) and **functional** (ARGs, VFs) features to capture mechanisms of microbial influence, including antibiotic resistance, immune modulation, and virulence.
+   It analyzes both **taxonomic** (Contig-level classification for species) and **functional** (Contig-level annotation of ARGs, VFs) features to capture mechanisms of microbial influence, including antibiotic resistance, immune modulation, and virulence.
 
 4. **Feature robustness**  
    Using **bootstrap stability**, and  **permutation importance**the pipeline identifies **robust biomarkers** that generalize across datasets.
