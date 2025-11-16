@@ -1,4 +1,4 @@
-# CausoBiome: A Microbiome Causality and Biomarker Discovery framework for Colorectal Cancer
+# CausoBiome: A Microbiome directional inference oriented and Biomarker Discovery framework for Colorectal Cancer
 
 ## Purpose
 
@@ -81,7 +81,7 @@ Performs **species-level ecological modeling and predictive biomarker discovery*
 
 ---
 
-### 🔹 **Module 02 — Functional ARG/VF Analysis and Causal Modeling**
+### 🔹 **Module 02 — Functional ARG/VF Analysis and Directional association Modeling**
 
 Performs **functional-level causal inference and translational risk modeling** using antimicrobial resistance genes (ARGs) and virulence factors (VFs).
 
