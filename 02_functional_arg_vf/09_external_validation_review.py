@@ -1086,3 +1086,321 @@ sns.despine()
 plt.tight_layout()
 plt.savefig("PLS1_PLS3_GeneLevel_Power_Distribution_trimmed.png", dpi=600, bbox_inches="tight")
 plt.show()
+##########################################################################
+## EXTERNAL VALIDATION BENCHMARKING
+##########################################################################
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import GridSearchCV, StratifiedKFold
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import (
+    roc_auc_score, accuracy_score, balanced_accuracy_score,
+    f1_score, cohen_kappa_score, matthews_corrcoef
+)
+import warnings
+warnings.filterwarnings("ignore")
+
+# ------------------------------------------------------------
+# 1. Load internal data EXACTLY LIKE ORIGINAL ANALYSIS
+# ------------------------------------------------------------
+internal_tpm = pd.read_csv("Combined_ARG_VFDB_CLR_batch_corrected.csv", index_col=0).T
+internal_meta = pd.read_csv("Metadata_Aligned_to_FilteredMatrix.csv")
+
+print("Matrix shape AFTER transpose (genes × samples):", internal_tpm.shape)
+
+# ------------------------------------------------------------
+# 2. Load PLS genes (unchanged)
+# ------------------------------------------------------------
+pls = pd.read_csv("PLS_TopGenes_Ranked_with_ComponentStats.csv")
+marker_genes = pls[pls["Component"].isin(["PLS_1","PLS_3"])]["Gene"].unique().tolist()
+print("Loaded PLS marker genes:", len(marker_genes))
+
+# ------------------------------------------------------------
+# 3. Prepare labels (unchanged)
+# ------------------------------------------------------------
+internal_samples = internal_tpm.columns.intersection(internal_meta["Sample_ID"])
+internal_tpm = internal_tpm[internal_samples]
+internal_meta = internal_meta[internal_meta["Sample_ID"].isin(internal_samples)]
+
+X = internal_tpm.loc[marker_genes].T
+y = internal_meta["Group"].replace({
+    "Healthy":0, "Adenoma":1, "Cancer":1
+}).astype(int)
+
+print("Final X shape:", X.shape)
+print("Class counts:\n", y.value_counts())
+
+# ------------------------------------------------------------
+# 4. Models (unchanged)
+# ------------------------------------------------------------
+models = {
+    "RandomForest": (
+        RandomForestClassifier(random_state=42, class_weight="balanced"),
+        {
+            "n_estimators":[300,500],
+            "max_depth":[5,10,None],
+            "min_samples_split":[2,4],
+            "max_features":["sqrt","log2"]
+        }
+    ),
+    "GradientBoosting": (
+        GradientBoostingClassifier(random_state=42),
+        {
+            "n_estimators":[200,500],
+            "learning_rate":[0.01,0.05,0.1],
+            "max_depth":[3,5],
+            "subsample":[0.6,0.8,1.0]
+        }
+    ),
+    "LogisticRegression": (
+        Pipeline([
+            ("scaler", StandardScaler()),
+            ("logreg", LogisticRegression(max_iter=5000, class_weight="balanced", random_state=42))
+        ]),
+        {
+            "logreg__penalty":["l1","l2"],
+            "logreg__C":[0.05,0.1,0.5,1,2],
+            "logreg__solver":["liblinear","saga"]
+        }
+    ),
+    "SVM": (
+        Pipeline([
+            ("scaler", StandardScaler()),
+            ("svm", SVC(probability=True, class_weight="balanced", random_state=42))
+        ]),
+        {
+            "svm__C":[0.1,1,10],
+            "svm__kernel":["linear","rbf"],
+            "svm__gamma":["scale","auto"]
+        }
+    ),
+    "DecisionTree": (
+        DecisionTreeClassifier(random_state=42, class_weight="balanced"),
+        {
+            "max_depth":[3,5,10,None],
+            "min_samples_split":[2,4,6],
+            "criterion":["gini","entropy"]
+        }
+    )
+}
+
+# ------------------------------------------------------------
+# 5. 5-fold benchmarking WITH MCC ADDED
+# ------------------------------------------------------------
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+results = []
+
+for name, (model, grid) in models.items():
+    print(f"\n🔍 Tuning {name}...")
+    gs = GridSearchCV(model, grid, scoring="roc_auc", cv=cv, n_jobs=-1)
+    gs.fit(X, y)
+    best = gs.best_estimator_
+
+    # Evaluate exactly like original analysis (on full X,y)
+    y_pred = best.predict(X)
+    y_prob = best.predict_proba(X)[:,1]
+
+    results.append({
+        "Model": name,
+        "CV_AUC": gs.best_score_,
+        "Accuracy": accuracy_score(y, y_pred),
+        "BalancedAcc": balanced_accuracy_score(y, y_pred),
+        "F1": f1_score(y, y_pred, average="macro"),
+        "Kappa": cohen_kappa_score(y, y_pred),
+        "MCC": matthews_corrcoef(y, y_pred)
+    })
+
+results_df = pd.DataFrame(results).sort_values("CV_AUC", ascending=False)
+print("\n=== FINAL BENCHMARKING RESULTS (with MCC) ===")
+print(results_df)
+
+results_df.to_csv("Internal_Binary_Benchmark_with_MCC.csv", index=False)
+###################################################################################
+### Leave-One-Cohort Out (Stratified AUC) and external validation using LR
+##################################################################################
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import GridSearchCV, StratifiedKFold
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (
+    accuracy_score, balanced_accuracy_score, f1_score,
+    cohen_kappa_score, matthews_corrcoef,
+    roc_auc_score
+)
+import seaborn as sns
+sns.set_style("whitegrid")
+
+print("📌 Loading data...")
+
+# =========================================================
+# 1. LOAD INTERNAL + EXTERNAL (correct orientation)
+# =========================================================
+
+internal_tpm = pd.read_csv("Combined_ARG_VFDB_CLR_batch_corrected.csv", index_col=0)
+external_tpm = pd.read_csv("Combined_CLR_ext.csv", index_col=0).T
+
+internal_meta = pd.read_csv("Metadata_Aligned_to_FilteredMatrix.csv")
+external_meta = pd.read_csv("metadata_ext.csv")
+
+pls = pd.read_csv("PLS_TopGenes_Ranked_with_ComponentStats.csv")
+pls_genes_raw = pls[pls["Component"].isin(["PLS_1", "PLS_3"])]["Gene"].unique().tolist()
+print(f"Loaded {len(pls_genes_raw)} raw PLS genes.")
+
+
+# =========================================================
+# 2. HARMONIZE GENE NAMES
+# =========================================================
+
+def clean_name(x):
+    return x.replace("VF_", "").replace("ARG_", "").replace(" ", "").strip()
+
+internal_tpm.columns = [clean_name(c) for c in internal_tpm.columns]
+external_tpm.columns = [clean_name(c) for c in external_tpm.columns]
+pls_genes = [clean_name(g) for g in pls_genes_raw]
+
+print("✔ Gene name harmonization complete.")
+
+
+# =========================================================
+# 3. ALIGN SAMPLES
+# =========================================================
+
+common_internal = internal_tpm.index.intersection(internal_meta["Sample_ID"])
+internal_tpm = internal_tpm.loc[common_internal]
+internal_meta = internal_meta[internal_meta["Sample_ID"].isin(common_internal)]
+internal_meta = internal_meta.set_index("Sample_ID").loc[internal_tpm.index]
+
+common_external = external_tpm.index.intersection(external_meta["Sample_ID"])
+external_tpm = external_tpm.loc[common_external]
+external_meta = external_meta[external_meta["Sample_ID"].isin(common_external)]
+external_meta = external_meta.set_index("Sample_ID").loc[external_tpm.index]
+
+print(f"✔ Internal samples: {internal_tpm.shape}")
+print(f"✔ External samples: {external_tpm.shape}")
+
+
+# =========================================================
+# 4. MAKE BINARY LABELS
+# =========================================================
+
+internal_meta["Binary"] = internal_meta["Group"].replace({
+    "Healthy": 0, "Adenoma": 1, "Cancer": 1
+}).astype(int)
+
+external_meta["Binary"] = external_meta["Group"].replace({
+    "Control": 0, "Healthy": 0,
+    "CRC": 1, "Case": 1, "Cancer": 1, "Adenoma": 1
+}).astype(int)
+
+# =========================================================
+# 5. INTERSECT FEATURES
+# =========================================================
+
+internal_genes = set(internal_tpm.columns)
+external_genes = set(external_tpm.columns)
+pls_set = set(pls_genes)
+
+marker_genes = list(internal_genes & external_genes & pls_set)
+
+print(f"✔ {len(marker_genes)} intersecting PLS genes after cleaning.")
+
+if len(marker_genes) < 5:
+    print("❗ WARNING: Very few overlapping PLS genes. Model may be unstable.")
+
+X_internal = internal_tpm[marker_genes].copy()
+y_internal = internal_meta["Binary"]
+
+X_external = external_tpm[marker_genes].copy()
+y_external = external_meta["Binary"]
+
+
+# =========================================================
+# 6. LOGISTIC REGRESSION PIPELINE (UNCHANGED)
+# =========================================================
+
+pipe = Pipeline([
+    ("scaler", StandardScaler()),
+    ("logreg", LogisticRegression(max_iter=5000, class_weight="balanced", random_state=42))
+])
+
+param_grid = {
+    "logreg__penalty": ["l1", "l2"],
+    "logreg__C": [0.05, 0.1, 0.5, 1, 2, 5],
+    "logreg__solver": ["liblinear", "saga"]
+}
+
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+def eval_model(model, X, y):
+    p = model.predict(X)
+    pr = model.predict_proba(X)[:,1]
+    return {
+        "Accuracy": accuracy_score(y, p),
+        "BalancedAcc": balanced_accuracy_score(y, p),
+        "F1": f1_score(y, p, average="macro"),
+        "Kappa": cohen_kappa_score(y, p),
+        "MCC": matthews_corrcoef(y, p),
+        "AUC": roc_auc_score(y, pr)
+    }
+
+
+# =========================================================
+# 7. LOCO — Cohort_1, Cohort_2, Cohort_3
+# =========================================================
+
+print("\n📌 Running LOCO evaluation...")
+
+loco_results = []
+
+for cohort in ["Cohort_1", "Cohort_2", "Cohort_3"]:
+    train_idx = internal_meta["Project"] != cohort
+    test_idx  = internal_meta["Project"] == cohort
+
+    if y_internal.loc[test_idx].nunique() < 2:
+        print(f"Skipping {cohort}: only one class present.")
+        continue
+
+    print(f"🔹 LOCO {cohort}")
+
+    gs = GridSearchCV(pipe, param_grid, scoring="roc_auc", cv=cv, n_jobs=-1)
+    gs.fit(X_internal.loc[train_idx], y_internal.loc[train_idx])
+    best_model = gs.best_estimator_
+
+    res = eval_model(best_model, X_internal.loc[test_idx], y_internal.loc[test_idx])
+    res["Cohort"] = cohort
+    loco_results.append(res)
+
+loco_df = pd.DataFrame(loco_results)
+loco_df.to_csv("LOCO_Results.csv", index=False)
+
+print("\nLOCO:")
+print(loco_df)
+
+
+# =========================================================
+# 8. INTERNAL → EXTERNAL 
+# =========================================================
+
+print("\n📌 Internal → External...")
+
+gs = GridSearchCV(pipe, param_grid, scoring="roc_auc", cv=cv, n_jobs=-1)
+gs.fit(X_internal, y_internal)
+
+internal_model = gs.best_estimator_
+res_internal_to_ext = eval_model(internal_model, X_external, y_external)
+res_internal_to_ext["Cohort"] = "Internal→External"
+
+cross_df = pd.DataFrame([res_internal_to_ext])
+cross_df.to_csv("CrossCohort_Results.csv", index=False)
+
+print("\nInternal → External:")
+print(cross_df)
+
+print("\n🎉 FINISHED.")
