@@ -200,9 +200,6 @@ plt.savefig("ML_Benchmarking_Figure.tiff", dpi=600, bbox_inches="tight", facecol
 plt.show()
 
 
-
-
-
 # =======================
 # Setup: Reproducibility and Imports
 # =======================
@@ -1087,3 +1084,248 @@ plt.savefig("TopSpecies_EnvHeatmap_Annotated.tiff", dpi=600, bbox_inches="tight"
 plt.show()
 
 print("✅ Saved: TopSpecies_EnvHeatmap_Annotated.tiff")
+
+##########################################################################
+## BENCHMARKING WITH MCC METRIC 
+##########################################################################
+# -*- coding: utf-8 -*-
+"""ARG_VF_ML_with_MCC_CLEAN.ipynb"""
+
+# ============================================================
+# Step 0 — Load and Prepare ARG/VF CLR Data
+# ============================================================
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+print("Loading ARG/VF CLR matrix...")
+argvf = pd.read_csv("Combined_ARG_VFDB_CLR_batch_corrected.csv", index_col=0)
+
+# Transpose → samples = rows
+#argvf = argvf.T
+print("ARG/VF matrix:", argvf.shape)
+
+# Load metadata
+meta = pd.read_csv("Metadata_Aligned_to_FilteredMatrix.csv")
+
+# Align samples
+common = argvf.index.intersection(meta["Sample_ID"])
+argvf = argvf.loc[common]
+meta = meta[meta["Sample_ID"].isin(common)].reset_index(drop=True)
+meta = meta.set_index("Sample_ID").loc[argvf.index].reset_index()
+
+X = argvf.values
+y = meta["Group"].values
+
+print("Aligned:", X.shape)
+print(meta["Group"].value_counts())
+
+# Holdout split (80/20)
+X_train, X_hold, y_train, y_hold = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+print("Train:", X_train.shape[0], "| Hold-out:", X_hold.shape[0])
+
+
+# ============================================================
+# Step 1 — Benchmarking (10-fold CV) WITH MCC
+# ============================================================
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import StratifiedKFold, cross_validate
+from sklearn.metrics import (
+    make_scorer,
+    accuracy_score,
+    balanced_accuracy_score,
+    f1_score,
+    cohen_kappa_score,
+    matthews_corrcoef
+)
+
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+
+# -------- Scorers with MCC added --------
+scorers = {
+    "accuracy": make_scorer(accuracy_score),
+    "balanced_accuracy": make_scorer(balanced_accuracy_score),
+    "f1_macro": make_scorer(f1_score, average="macro"),
+    "kappa": make_scorer(cohen_kappa_score),
+    "mcc": make_scorer(matthews_corrcoef)
+}
+
+# -------- Models --------
+models = {
+    "DecisionTree": DecisionTreeClassifier(random_state=42, class_weight="balanced"),
+    "RandomForest": RandomForestClassifier(random_state=42, n_jobs=-1, class_weight="balanced"),
+    "LogisticRegression": LogisticRegression(max_iter=5000, random_state=42, class_weight="balanced"),
+    "SVM": SVC(kernel="rbf", probability=True, random_state=42, class_weight="balanced"),
+    "GradientBoosting": GradientBoostingClassifier(random_state=42)
+}
+
+# -------- 10-fold CV --------
+cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
+results = []
+
+print("\nRunning 10-fold benchmarking with MCC...")
+
+for name, model in models.items():
+    cv_out = cross_validate(
+        model, X_train, y_train, cv=cv,
+        scoring=scorers, n_jobs=-1
+    )
+
+    for metric in scorers.keys():
+        scores = cv_out[f"test_{metric}"]
+        results.append({
+            "Model": name,
+            "Metric": metric,
+            "Mean": np.mean(scores),
+            "SD": np.std(scores)
+        })
+
+df_results = pd.DataFrame(results)
+df_results.to_csv("ARGVF_Benchmarking_AllModels_MCC.csv", index=False)
+
+print("\n===== Benchmarking results =====")
+print(df_results)
+
+
+# ============================================================
+# Step 2 — Summary Table (mean ± SD)
+# ============================================================
+
+df_results["Metric"] = df_results["Metric"].str.replace("_", " ").str.title()
+
+summary = (
+    df_results.pivot(index="Model", columns="Metric", values="Mean")
+    .round(3)
+    .astype(str)
+    + " ± "
+    + df_results.pivot(index="Model", columns="Metric", values="SD")
+        .round(3)
+        .astype(str)
+)
+
+summary.to_csv("ARGVF_Benchmarking_Statistics_MCC.csv")
+print("\n===== Summary Table =====")
+print(summary)
+
+
+# ============================================================
+# Step 3 — Nested CV WITH MCC (RF & GB only)
+# ============================================================
+
+from sklearn.model_selection import GridSearchCV
+from collections import defaultdict
+
+# -------- Your EXACT original hyperparameter grids --------
+param_grids = {
+    "RandomForest": {
+        "n_estimators": [100, 300, 500],
+        "max_depth": [3, 7, 12],
+        "min_samples_split": [2, 5, 10],
+        "min_samples_leaf": [1, 2, 4],
+        "max_features": ["sqrt", "log2", None]
+    },
+    "GradientBoosting": {
+        "n_estimators": [100, 300, 500],
+        "learning_rate": [0.01, 0.05, 0.1],
+        "max_depth": [3, 5, 7],
+        "subsample": [0.6, 0.8, 1.0]
+    }
+}
+
+models_nested = {
+    "RandomForest": RandomForestClassifier(random_state=42, n_jobs=-1, class_weight="balanced"),
+    "GradientBoosting": GradientBoostingClassifier(random_state=42)
+}
+
+outer = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+inner = StratifiedKFold(n_splits=3, shuffle=True, random_state=42)
+
+cv_summary = []
+best_params = {}
+
+print("\nRunning nested CV with MCC...")
+
+for name, base_model in models_nested.items():
+    metrics_outer = defaultdict(list)
+
+    for tr_idx, te_idx in outer.split(X_train, y_train):
+        X_tr, X_te = X_train[tr_idx], X_train[te_idx]
+        y_tr, y_te = y_train[tr_idx], y_train[te_idx]
+
+        gs = GridSearchCV(
+            base_model, param_grids[name],
+            cv=inner, scoring="balanced_accuracy", n_jobs=-1
+        )
+        gs.fit(X_tr, y_tr)
+        best = gs.best_estimator_
+
+        y_pred = best.predict(X_te)
+
+        metrics_outer["Acc"].append(accuracy_score(y_te, y_pred))
+        metrics_outer["BalAcc"].append(balanced_accuracy_score(y_te, y_pred))
+        metrics_outer["F1"].append(f1_score(y_te, y_pred, average="macro"))
+        metrics_outer["Kappa"].append(cohen_kappa_score(y_te, y_pred))
+        metrics_outer["MCC"].append(matthews_corrcoef(y_te, y_pred))
+
+    cv_summary.append({
+        "Model": name,
+        "Acc": np.mean(metrics_outer["Acc"]),
+        "BalAcc": np.mean(metrics_outer["BalAcc"]),
+        "F1": np.mean(metrics_outer["F1"]),
+        "Kappa": np.mean(metrics_outer["Kappa"]),
+        "MCC": np.mean(metrics_outer["MCC"])
+    })
+
+    best_params[name] = gs.best_params_
+
+nested_df = pd.DataFrame(cv_summary)
+nested_df.to_csv("ARGVF_NestedCV_Summary_MCC.csv", index=False)
+
+print("\n===== Nested CV Summary =====")
+print(nested_df)
+print("\nBest Params:", best_params)
+
+
+# ============================================================
+# Step 4 — Final Hold-out Evaluation WITH MCC
+# ============================================================
+
+from sklearn.metrics import matthews_corrcoef
+
+def eval_holdout(model, X_train, y_train, X_hold, y_hold):
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_hold)
+    return {
+        "Accuracy": accuracy_score(y_hold, y_pred),
+        "BalancedAcc": balanced_accuracy_score(y_hold, y_pred),
+        "F1": f1_score(y_hold, y_pred, average="macro"),
+        "Kappa": cohen_kappa_score(y_hold, y_pred),
+        "MCC": matthews_corrcoef(y_hold, y_pred)
+    }
+
+print("\nEvaluating hold-out models...")
+
+rf_best = models_nested["RandomForest"].set_params(**best_params["RandomForest"])
+gb_best = models_nested["GradientBoosting"].set_params(**best_params["GradientBoosting"])
+
+rf_hold = eval_holdout(rf_best, X_train, y_train, X_hold, y_hold)
+gb_hold = eval_holdout(gb_best, X_train, y_train, X_hold, y_hold)
+
+hold_df = pd.DataFrame([rf_hold, gb_hold], index=["RandomForest", "GradientBoosting"])
+hold_df.to_csv("ARGVF_Holdout_With_MCC.csv")
+
+print("\n===== Holdout Results =====")
+print(hold_df)
+
+print("\n🎯 ARG–VF MACHINE-LEARNING WITH MCC COMPLETE!")
+
