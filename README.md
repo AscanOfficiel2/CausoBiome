@@ -248,13 +248,13 @@ We kindly request that you do not republish or repackage this methodology before
 If you use **CausoBiome**, please cite the following manuscript:
 
 > **Ascandari, A., Aminu, S., Benhida, R., & Daoud, R.** (2025).  
-> *Dual ecological strategies underpin the functional balance of the colorectal cancer microbiome*.  
+> *Dual ecological strategies characterize the functional balance of the colorectal cancer microbiome*.  
 
 
 ## Submitted Articles Related to the Framework
 
 > **Ascandari, A., Aminu, S., Benhida, R., & Daoud, R.** (2025).  
-> *Dual ecological strategies underpin the functional balance of the colorectal cancer microbiome* (under review; npj Biofilms and Microbiomes).
+> *Dual ecological strategies characterize the functional balance of the colorectal cancer microbiome* (under review; npj Biofilms and Microbiomes).
 
 
 ## Contact
