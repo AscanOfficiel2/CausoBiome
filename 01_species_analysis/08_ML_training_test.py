@@ -555,8 +555,6 @@ def evaluate_and_save(model_name, model, X_train, y_train, X_test, y_test, label
     print(f"🎯 AUROC curves saved for {model_name}")
     return metrics
 
-
-
 # ============================================================
 # Evaluate both tuned models
 # ============================================================
@@ -571,3 +569,287 @@ gb_results = evaluate_and_save("GradientBoosting", gb_best, X_train, y_train, X_
 # ---- Combined summary
 pd.DataFrame([rf_results, gb_results]).to_csv("Holdout_AllModels_Summary.csv", index=False)
 print("\n📊 Hold-out metrics summary saved (RF + GB).")
+
+#################################################################################################
+### Extended Benchmarking with MCC metric
+##################################################################################################
+# -*- coding: utf-8 -*-
+"""Species_ML_with_MCC.ipynb — FULL WORKING SCRIPT"""
+
+# ===============================
+# Step 1. Data Preparation
+# ===============================
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+# -------------------------
+# Load data
+# -------------------------
+tpm = pd.read_csv("TPM_clr_batch_corrected_v1.csv", index_col=0)
+meta = pd.read_csv("/content/CRC_Cleaned_MetaData.csv")
+
+# Align samples
+common_samples = tpm.columns.intersection(meta["Sample_ID"])
+tpm = tpm[common_samples]
+meta = meta[meta["Sample_ID"].isin(common_samples)].reset_index(drop=True)
+tpm = tpm[meta["Sample_ID"]]  # enforce same order
+
+# Features and labels
+X = tpm.T.values  # samples × species
+y = meta["Group"].values
+
+print("Features shape:", X.shape)
+print("Labels distribution:\n", meta["Group"].value_counts())
+
+# -------------------------
+# 80/20 Hold-out split
+# -------------------------
+X_train, X_hold, y_train, y_hold = train_test_split(
+    X, y, test_size=0.2, stratify=y, random_state=42
+)
+
+print("\nTrain:", X_train.shape[0], "Hold-out:", X_hold.shape[0])
+
+
+# ===============================
+# Benchmarking (10-fold CV) — WITH MCC
+# ===============================
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.model_selection import StratifiedKFold, cross_validate
+from sklearn.metrics import (
+    make_scorer,
+    accuracy_score,
+    balanced_accuracy_score,
+    f1_score,
+    cohen_kappa_score,
+    matthews_corrcoef
+)
+from sklearn.ensemble import (
+    RandomForestClassifier,
+    GradientBoostingClassifier
+)
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+
+# -------------------------
+# Define scorers (MCC added)
+# -------------------------
+scorers = {
+    "accuracy": make_scorer(accuracy_score),
+    "balanced_accuracy": make_scorer(balanced_accuracy_score),
+    "f1_macro": make_scorer(f1_score, average="macro"),
+    "kappa": make_scorer(cohen_kappa_score),
+    "mcc": make_scorer(matthews_corrcoef)
+}
+
+# -------------------------
+# Define models
+# -------------------------
+models = {
+    "DecisionTree": DecisionTreeClassifier(random_state=42, class_weight="balanced"),
+    "RandomForest": RandomForestClassifier(random_state=42, n_jobs=-1, class_weight="balanced"),
+    "LogisticRegression": LogisticRegression(max_iter=5000, random_state=42, class_weight="balanced"),
+    "SVM": SVC(kernel="rbf", probability=True, random_state=42, class_weight="balanced"),
+    "GradientBoosting": GradientBoostingClassifier(random_state=42)
+}
+
+# -------------------------
+# Cross-validation (10 folds)
+# -------------------------
+cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
+results = []
+
+print("\nRunning 10-fold benchmarking with MCC...")
+
+for name, model in models.items():
+    cv_out = cross_validate(
+        model,
+        X_train,
+        y_train,
+        cv=cv,
+        scoring=scorers,
+        n_jobs=-1
+    )
+
+    for metric in scorers.keys():
+        values = cv_out[f"test_{metric}"]
+        results.append({
+            "Model": name,
+            "Metric": metric,
+            "Mean": np.mean(values),
+            "SD": np.std(values)
+        })
+
+df_results = pd.DataFrame(results)
+df_results.to_csv("Species_Benchmarking_AllModels_MCC.csv", index=False)
+
+print(df_results)
+
+
+# ===============================
+# Benchmarking Visualization
+# ===============================
+
+df_results["Metric"] = df_results["Metric"].str.replace("_", " ").str.title()
+
+metric_order = ["Accuracy", "Balanced Accuracy", "F1 Macro", "Kappa", "Mcc"]
+model_order = ["DecisionTree", "RandomForest", "LogisticRegression", "SVM", "GradientBoosting"]
+
+sns.set_theme(style="whitegrid", context="talk")
+
+g = sns.catplot(
+    data=df_results,
+    x="Mean", y="Model",
+    col="Metric", col_wrap=2,
+    kind="point", join=False,
+    palette="Set2",
+    errorbar=None,
+    order=model_order,
+    height=4.5, aspect=1.3
+)
+
+for ax, metric in zip(g.axes.flat, metric_order):
+    sub = df_results[df_results["Metric"] == metric]
+
+    for _, row in sub.iterrows():
+        ax.errorbar(
+            row["Mean"], row["Model"],
+            xerr=row["SD"],
+            fmt='o', color="black", capsize=3, markersize=6
+        )
+
+    ax.set_xlim(0, 1)
+    ax.set_title(metric)
+
+plt.savefig("Species_Benchmarking_Figure_MCC.tiff", dpi=600)
+plt.show()
+
+
+# ===============================
+# Benchmarking Summary Table (mean ± SD)
+# ===============================
+
+table = df_results.pivot(index="Model", columns="Metric", values="Mean")
+table_sd = df_results.pivot(index="Model", columns="Metric", values="SD")
+stats_table = table.round(3).astype(str) + " ± " + table_sd.round(3).astype(str)
+
+stats_table.to_csv("Species_Benchmarking_Statistics_MCC.csv")
+print("\n===== Final Benchmark Table =====")
+print(stats_table)
+
+
+# ===============================
+# Nested CV + Final Hold-out — WITH MCC
+# ===============================
+
+from sklearn.model_selection import GridSearchCV
+from collections import defaultdict
+
+# -------------------------
+# Models for nested CV
+# -------------------------
+models_nested = {
+    "RandomForest": RandomForestClassifier(random_state=42, n_jobs=-1, class_weight="balanced"),
+    "GradientBoosting": GradientBoostingClassifier(random_state=42)
+}
+
+param_grids = {
+    "RandomForest": {
+        "n_estimators": [300, 500],
+        "max_depth": [None, 10],
+        "min_samples_leaf": [1, 3],
+        "max_features": ["sqrt", 0.5]
+    },
+    "GradientBoosting": {
+        "n_estimators": [200, 400],
+        "learning_rate": [0.01, 0.05],
+        "max_depth": [3, 5]
+    }
+}
+
+outer = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+inner = StratifiedKFold(n_splits=3, shuffle=True, random_state=42)
+
+cv_summary = []
+best_params = {}
+
+for name, base_model in models_nested.items():
+
+    outer_metrics = defaultdict(list)
+
+    for fold, (tr_idx, te_idx) in enumerate(outer.split(X_train, y_train), 1):
+        X_tr, X_te = X_train[tr_idx], X_train[te_idx]
+        y_tr, y_te = y_train[tr_idx], y_train[te_idx]
+
+        gs = GridSearchCV(
+            base_model,
+            param_grids[name],
+            cv=inner,
+            scoring="balanced_accuracy",
+            n_jobs=-1
+        )
+        gs.fit(X_tr, y_tr)
+        best = gs.best_estimator_
+
+        y_pred = best.predict(X_te)
+
+        # Add MCC
+        mcc = matthews_corrcoef(y_te, y_pred)
+
+        outer_metrics["Accuracy"].append(accuracy_score(y_te, y_pred))
+        outer_metrics["BalancedAcc"].append(balanced_accuracy_score(y_te, y_pred))
+        outer_metrics["F1"].append(f1_score(y_te, y_pred, average="macro"))
+        outer_metrics["Kappa"].append(cohen_kappa_score(y_te, y_pred))
+        outer_metrics["MCC"].append(mcc)
+
+    cv_summary.append({
+        "Model": name,
+        "Acc": np.mean(outer_metrics["Accuracy"]),
+        "MCC": np.mean(outer_metrics["MCC"])
+    })
+
+    best_params[name] = gs.best_params_
+
+print("\nNested CV Summary:")
+print(pd.DataFrame(cv_summary))
+print("\nBest params:", best_params)
+
+
+# ===============================
+# Final Hold-out Performance — MCC INCLUDED
+# ===============================
+
+from sklearn.metrics import matthews_corrcoef
+
+def evaluate_holdout(model, X_train, y_train, X_hold, y_hold):
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_hold)
+    return {
+        "Accuracy": accuracy_score(y_hold, y_pred),
+        "BalancedAcc": balanced_accuracy_score(y_hold, y_pred),
+        "F1": f1_score(y_hold, y_pred, average="macro"),
+        "Kappa": cohen_kappa_score(y_hold, y_pred),
+        "MCC": matthews_corrcoef(y_hold, y_pred)
+    }
+
+print("\nEvaluating final tuned models on hold-out...")
+
+rf_final = models_nested["RandomForest"].set_params(**best_params["RandomForest"])
+gb_final = models_nested["GradientBoosting"].set_params(**best_params["GradientBoosting"])
+
+rf_hold = evaluate_holdout(rf_final, X_train, y_train, X_hold, y_hold)
+gb_hold = evaluate_holdout(gb_final, X_train, y_train, X_hold, y_hold)
+
+holdout_df = pd.DataFrame([rf_hold, gb_hold], index=["RandomForest", "GradientBoosting"])
+holdout_df.to_csv("Species_Holdout_With_MCC.csv")
+
+print("\n===== Hold-out Results (with MCC) =====")
+print(holdout_df)
+
+
+print("\n🎯 FULL SPECIES PIPELINE WITH MCC COMPLETE!")
