@@ -260,6 +260,8 @@ If you use **CausoBiome**, please cite the following manuscript:
 ## Contact
 For questions, feedback, or collaboration regarding this framework, please reach out:
 
-AbdulAziz Ascandari, PhD Researcher, Department of Chemical and Biochemical Sciences, University Mohammed VI Polytechnic (UM6P), Morocco, abdulaziz.ascandari@um6p.ma
+AbdulAziz Ascandari (Lead Developer), PhD Researcher, Department of Chemical and Biochemical Sciences, University Mohammed VI Polytechnic (UM6P), Morocco, abdulaziz.ascandari@um6p.ma
+
+Suleiman Aminu, PhD Researcher, Department of Chemical and Biochemical Sciences, University Mohammed VI Polytechnic (UM6P), Morocco, suleiman.aminu@um6p.ma
 
 Prof. Rachid Daoud, Group Leader & Supervisor, Department of Chemical and Biochemical Sciences, University Mohammed VI Polytechnic (UM6P), Morocco, rachid.daoud@um6p.ma
