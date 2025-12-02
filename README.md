@@ -108,7 +108,7 @@ Performs **functional-level causal inference and translational risk modeling** u
 05_Nuisance_models.py
 06_DAG_analysis.R
 07_causal_review.py
-08_risk_score.py
+08_Dual_Axis_index.py
 09_external_validation_review.py
 ```
 
