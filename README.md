@@ -13,8 +13,8 @@ Unlike conventional pipelines that stop at descriptive comparisons, CausoBiome i
 CausoBiome is built around five central goals:
 
 1. **Stage-awareness**  
-   It models microbiome dynamics along **clinically meaningful transitions**, e.g.  
-   `Healthy → Adenoma → Cancer`, capturing directional microbial shifts rather than static contrasts.
+   It models microbiome functional dynamics along **clinically meaningful transitions**, e.g.  
+   `Healthy → Adenoma → Cancer`, capturing directional functional shifts rather than static contrasts.
 
 2. **Causality over correlation**  
    Through **Partial Least squares (PLS) dimentionality reduction of features and Double Machine Learning (DML)** CausoBiome estimates the **average treatment effect (ATE)** of each PLS component while controlling for key confounders (e.g., Age, BMI, Sex).
@@ -29,7 +29,6 @@ CausoBiome is built around five central goals:
    By incorporating **external cohort validation**, trend consistency, and statistical replication, CausoBiome ensures that its findings are not dataset-specific artifacts.
 
 ---
-
 
 
 ## Modular Architecture
